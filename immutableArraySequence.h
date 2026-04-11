@@ -23,7 +23,7 @@ template<class T> class ImmutableArraySequence : public ArraySequence<T>{
         int n = this->GetLength();
         if (n == 0) return ArraySequence<T>::NewEmpty(); // или new ImmutableArraySequence<T>;
 
-        // создаём ImmutableArraySequence с нужной длиной
+        
         ImmutableArraySequence<T> result(n);
         for (int i = 0; i < n; ++i) {
             result[i] = func(this->Get(i));
@@ -35,7 +35,7 @@ template<class T> class ImmutableArraySequence : public ArraySequence<T>{
         int n = this->GetLength();
         if (n == 0) return ArraySequence<T>::NewEmpty();
 
-        // собираем элементы в MutableArraySequence как буфер
+    
         MutableArraySequence<T> buffer;
         for (int i = 0; i < n; ++i) {
             T item = this->Get(i);
@@ -44,12 +44,12 @@ template<class T> class ImmutableArraySequence : public ArraySequence<T>{
             }
         }
 
-        // если буфер пустой — возвращаем пустой ImmutableArraySequence
+        
         if (buffer.GetLength() == 0) {
             return new ImmutableArraySequence<T>();
         }
 
-        // копируем в ImmutableArraySequence
+        
         ImmutableArraySequence<T> result(buffer.GetLength());
         for (int i = 0; i < buffer.GetLength(); ++i) {
             result[i] = buffer.Get(i);
