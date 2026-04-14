@@ -1,44 +1,58 @@
-#include "arraySequence.h"
+#include <climits>
+#include "Sequence.h"
+#include "dynamicArray.h"
 
-class Bit{
+
+class BitSequence : public Sequence<bool>{
     private:
-        bool value;
-    public:
-        Bit(bool bit=false) : value(bit){}
 
+        typedef unsigned int BlockType;
+        DynamicArray<BlockType> blocks;
+        static const unsigned int bit_per_block = sizeof(BlockType) * CHAR_BIT;
+        int length;
 
-        bool Get() const{return value;}
-        void Set(bool bit){value=bit;}
-
-        operator bool() const {return value;}//bit->bool
-        bool operator&(bool other) const {return value && other;}
-
-
-};
-
-class BitSequence : public ArraySequence<Bit>{
-    public:
-        virtual BitSequence* Instance() override { 
-            return this; 
+        static int GetBlock(int index){
+            return index / bit_per_block;
         }
 
-        virtual BitSequence* CreateNewArray(Bit* items, int cnt) const override{
-            return new BitSequence(items, cnt);
+        static int GetBitBlock(int index){//просто вызываются без this
+            return index % bit_per_block;
         }
+
+
+    public:
+
+        bool operator[](int index) const{return Get(index);}
+
+
+        BitSequence (bool* items, int cnt) : blocks(GetBlock(cnt + (bit_per_block - 1))), length(cnt){
+            for (int i=0; i<cnt; i++){
+                blocks[GetBlock(i)] |= items[i]<<GetBitBlock(i); //происходит побитовое сложение и все элементы кроме итого остаются
+            }
+        };
+        BitSequence () : blocks(0), length(0){};
+        BitSequence (int cnt) : blocks(GetBlock(cnt + (bit_per_block - 1))), length(cnt){};
+
+        virtual ~BitSequence(){};
+
+        virtual bool GetFirst() const override;
+        virtual bool GetLast() const override;
+        virtual bool Get(int index) const override; 
+        virtual BitSequence* GetSubsequence(int startIndex, int endIndex) const override;
+        virtual int GetLength() const override;
+
+        virtual BitSequence* Append(bool item) override;
+        virtual BitSequence* Prepend(bool item) override;
+        virtual BitSequence* InsertAt(bool item, int index) override;
 
         virtual BitSequence* NewEmpty() const override{
             return new BitSequence;
         }
 
-        BitSequence (Bit* items, int count) : ArraySequence<Bit>(items, count){};
-        BitSequence () : ArraySequence<Bit>(){};
-        BitSequence (const BitSequence & bitSeq) : ArraySequence<Bit>(bitSeq){};
-        BitSequence (int cnt) : ArraySequence<Bit>(cnt){};
-
         BitSequence operator~() const{
             BitSequence result(*this);
             for (int i=0; i<GetLength();i++){
-                result[i] = !result[i];
+                //result[i] = !result[i];
             }
             return result;
         }
@@ -52,7 +66,7 @@ class BitSequence : public ArraySequence<Bit>{
             int index = big.GetLength() - small.GetLength();
 
             for (int i=index; i<result_size;i++){
-                result[i] = big[i] & small[i-index];
+                //result[i] = big[i] & small[i-index];
             }
             return result;
         }
@@ -66,7 +80,7 @@ class BitSequence : public ArraySequence<Bit>{
             int index = big.GetLength() - small.GetLength();
 
             for (int i = index; i < result_size; i++) {
-                result[i] = big[i] | small[i-index];
+                //result[i] = big[i] | small[i-index];
             }
             return result;
         }
@@ -80,7 +94,7 @@ class BitSequence : public ArraySequence<Bit>{
             int index = big.GetLength() - small.GetLength();
 
             for (int i = index; i < result_size; i++) {
-                result[i] = big[i] ^ small[i-index];
+                //result[i] = big[i] ^ small[i-index];
             }
             return result;
         }
