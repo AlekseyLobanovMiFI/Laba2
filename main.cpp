@@ -92,6 +92,21 @@ void test_MutableArraySequence() {
     cout << "MutableArraySequence: ";
     PrintSequence(&mutableSeq);
 
+      // ============================= Map =========================
+    Sequence<int>* mapped = mutableSeq.Map(Square);
+    cout << "Map(x*x):               ";
+    PrintSequence(mapped);
+
+    // ============================= Where =======================
+    Sequence<int>* filtered = mutableSeq.Where(IsEven);
+    cout << "Where(even):            ";
+    PrintSequence(filtered);
+
+    // ============================= Map + Where chain ===========
+    Sequence<int>* chained = mutableSeq.Map(Square)->Where(IsEven);
+    cout << "Map(x*x)->Where(even):  ";
+    PrintSequence(chained);
+
     cout << "GetFirst(): " << mutableSeq.GetFirst() << "\n";
     cout << "GetLast():  " << mutableSeq.GetLast()  << "\n";
 

@@ -14,7 +14,7 @@ template <class T> class LinkedList{
         int length;
 
     public:
-        LinkedList (T* items, int count) : head(nullptr), tail(head), length(0){
+        LinkedList (const T* items, int count) : head(nullptr), tail(head), length(0){
             for (int i=0; i<count; i++){
                 Append(items[i]);
             }
@@ -68,8 +68,14 @@ template <class T> class LinkedList{
                 throw std::out_of_range("IndexOutOfRange");
             }
             LinkedList<T>* result = new LinkedList<T>;
+            Node* current = head;
+            for (int i=0; i<startIndex;i++){
+                current = current->next;
+            }
+            
             for (int i=startIndex; i<=endIndex;i++){
-                result->Append(Get(i));
+                result->Append(current->value);
+                current = current->next;
             }
             return result;
         } 

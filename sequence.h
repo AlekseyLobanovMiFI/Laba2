@@ -24,14 +24,19 @@ template <class T> class Sequence{
             return this;
         }
 
-        //virtual Sequence<T>* NewEmpty() const =0;
-        virtual Sequence<T>* NewEmpty() const { return nullptr; }
+        virtual Sequence<T>* NewEmpty() const =0;
 
         virtual Sequence <T>* Map(T (*func)(T)) const{
-            Sequence <T>* result = this->NewEmpty();
+            Sequence <T>* result = NewEmpty();
+            Sequence <T>* temp = result;
 
             for (int i = 0; i < GetLength(); i++) {
-                result->Append(func(Get(i)));
+                temp = result->Append(func(Get(i)));
+                if (temp != result){ 
+                    delete result;
+                    result = temp;
+                }
+
             }
 
             return result;
@@ -39,12 +44,17 @@ template <class T> class Sequence{
         }
 
         virtual Sequence <T>* Where(bool (*func)(T)) const{
-            Sequence <T>* result = this->NewEmpty();
+            Sequence <T>* result = NewEmpty();
+            Sequence <T>* temp = result;
 
             for (int i = 0; i < GetLength(); i++) {
                 T item = Get(i);
                 if (func(item)){
-                    result->Append(item);
+                    temp = result->Append(item);
+                    if (temp != result){ 
+                        delete result;
+                        result = temp;
+                    }
                 }
             }
 
