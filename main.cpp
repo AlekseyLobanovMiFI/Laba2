@@ -1,10 +1,10 @@
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 #include "sequence.h"
 #include "arraySequence.h"
 #include "listSequence.h"
-#include "bitSequence.h"
 #include "MutableArraySequence.h"
 #include "immutableArraySequence.h"
 
@@ -28,200 +28,230 @@ void PrintSequence(Sequence<int>* seq) {
     cout << "]\n";
 }
 
-// ============================================================================
-// 1) Тесты для ImmutableArraySequence
-// ============================================================================
-
 int Square(int x) { return x * x; }
 bool IsEven(int x) { return x % 2 == 0; }
+bool IsOdd(int x)  { return x % 2 == 1; }
+bool IsBig(int x)   { return x >= 5; }
 int Add(int x, int y) { return x + y; }
+int Mult(int x, int y) { return x * y; }
 
 void test_ImmutableArraySequence() {
-    cout << "=== IMMUTABLE ARRAYSEQUENCE ===\n";
+    cout << "=== IMMUTABLE ARRAYSEQUENCE FULL TEST ===\n\n";
 
-    int arr[] = {1, 2, 3, 4, 5};
-    ImmutableArraySequence<int> immutableSeq(arr, 5);
+    ImmutableArraySequence<int> empty;
+    cout << "Length: " << empty.GetLength() << "\n";
+    try {
+        empty.GetFirst();
+    } catch (const out_of_range&) {
+        cout << "GetFirst() on empty throws → OK\n";
+    }
+    try {
+        empty.GetLast();
+    } catch (const out_of_range&) {
+        cout << "GetLast() on empty throws → OK\n";
+    }
 
-    cout << "ImmutableArraySequence: ";
-    PrintSequence(&immutableSeq);
+    Sequence<int>* emptyMapped = empty.Map(Square);
+    cout << "Map on empty → Length: " << emptyMapped->GetLength() << "\n";
 
-    // ============================= Map =========================
-    Sequence<int>* mapped = immutableSeq.Map(Square);
-    cout << "Map(x*x):               ";
+    Sequence<int>* emptyFiltered = empty.Where(IsEven);
+    cout << "Where on empty → Length: " << emptyFiltered->GetLength() << "\n";
+
+    int emptySum = empty.Reduce(42, Add);
+    cout << "Reduce on empty (init=42) → " << emptySum << "\n\n";
+
+    delete emptyMapped;
+    delete emptyFiltered;
+
+    int arr1[] = {1, 2, 3, 4, 5};
+    ImmutableArraySequence<int> seq1(arr1, 5);
+
+    cout << "Original: ";
+    PrintSequence(&seq1);
+
+    cout << "GetFirst(): " << seq1.GetFirst() << "\n";
+    cout << "GetLast():  " << seq1.GetLast()  << "\n";
+    cout << "Get(3):     " << seq1.Get(3)     << "\n\n";
+
+    Sequence<int>* mapped = seq1.Map(Square);
+    cout << "Map(x*x): ";
     PrintSequence(mapped);
 
-    // ============================= Where =======================
-    Sequence<int>* filtered = immutableSeq.Where(IsEven);
-    cout << "Where(even):            ";
+    Sequence<int>* filtered = seq1.Where(IsEven);
+    cout << "Where(even): ";
     PrintSequence(filtered);
 
-    // ============================= Map + Where chain ===========
-    Sequence<int>* chained = immutableSeq.Map(Square)->Where(IsEven);
-    cout << "Map(x*x)->Where(even):  ";
-    PrintSequence(chained);
+    Sequence<int>* chain = seq1.Map(Square)->Where(IsEven);
+    cout << "Map(x*x)->Where(even): ";
+    PrintSequence(chain);
 
-    // ============================= Reduce ======================
-    int sum = immutableSeq.Reduce(0, Add);
-    cout << "Reduce(sum = 0 + x): " << sum << "\n";
+    int sum = seq1.Reduce(0, Add);
+    int prod = seq1.Reduce(1, Mult);
+    cout << "Reduce(sum=0): " << sum << "\n";
+    cout << "Reduce(prod=1): " << prod << "\n\n";
 
-    // ============================= SubSequence =================
-    Sequence<int>* sub = immutableSeq.GetSubsequence(1, 3);
-    cout << "GetSubsequence(1..3):   ";
+    Sequence<int>* sub = seq1.GetSubsequence(1, 3);
+    cout << "GetSubsequence(1..3): ";
     PrintSequence(sub);
 
-    // ============================= First/Last ==================
-    cout << "GetFirst(): " << immutableSeq.GetFirst() << "\n";
-    cout << "GetLast():  " << immutableSeq.GetLast()  << "\n\n";
+    Sequence<int>* full = seq1.GetSubsequence(0, 4);
+    cout << "GetSubsequence(0..4): ";
+    PrintSequence(full);
+
+    Sequence<int>* single = seq1.GetSubsequence(2, 2);
+    cout << "GetSubsequence(2..2): ";
+    PrintSequence(single);
+
+    cout << "\n";
 
     delete mapped;
     delete filtered;
-    delete chained;
+    delete chain;
     delete sub;
-}
+    delete full;
+    delete single;
 
-// ============================================================================
-// 2) Тесты для MutableArraySequence
-// ============================================================================
-
-void test_MutableArraySequence() {
-    cout << "=== MUTABLEARRAYSEQUENCE ===\n";
-
-    int arr[] = {1, 2, 3, 4, 5};
-    MutableArraySequence<int> mutableSeq(arr, 5);
-
-    cout << "MutableArraySequence: ";
-    PrintSequence(&mutableSeq);
-
-      // ============================= Map =========================
-    Sequence<int>* mapped = mutableSeq.Map(Square);
-    cout << "Map(x*x):               ";
-    PrintSequence(mapped);
-
-    // ============================= Where =======================
-    Sequence<int>* filtered = mutableSeq.Where(IsEven);
-    cout << "Where(even):            ";
-    PrintSequence(filtered);
-
-    // ============================= Map + Where chain ===========
-    Sequence<int>* chained = mutableSeq.Map(Square)->Where(IsEven);
-    cout << "Map(x*x)->Where(even):  ";
-    PrintSequence(chained);
-
-    cout << "GetFirst(): " << mutableSeq.GetFirst() << "\n";
-    cout << "GetLast():  " << mutableSeq.GetLast()  << "\n";
-
-    Sequence<int>* sub = mutableSeq.GetSubsequence(1, 3);
-    cout << "GetSubsequence(1..3): ";
-    PrintSequence(sub);
-
-    int sum = mutableSeq.Reduce(0, Add);
-    cout << "Reduce(sum): " << sum << "\n";
-
-    delete sub;
-}
-
-// ============================================================================
-// 3) Тесты для ListSequence
-// ============================================================================
-
-void test_ListSequence() {
-    cout << "\n=== LIST SEQUENCE (immutable) ===\n";
-
-    int arr[] = {1, 3, 5, 7, 9};
-    ListSequence<int> listSeq(arr, 5);
-
-    cout << "ListSequence: ";
-    PrintSequence(&listSeq);
-
-    // Map
-    auto Twice = [](int x) { return x * 2; };
-    Sequence<int>* doubled = listSeq.Map(Twice);
-    cout << "Map(x*2):              ";
+    int arr2[] = {2, 2, 4, 4, 6};
+    ImmutableArraySequence<int> seq2(arr2, 5);
+    Sequence<int>* doubled = seq2.Map([](int x) { return x * 2; });
+    cout << "Original: ";
+    PrintSequence(&seq2);
+    cout << "Map(x*2): ";
     PrintSequence(doubled);
 
-    // Where
+    Sequence<int>* gt3 = seq2.Where([](int x) { return x > 3; });
+    cout << "Where(x>3): ";
+    PrintSequence(gt3);
+
+    int sum2 = seq2.Reduce(0, Add);
+    cout << "Reduce(sum=0): " << sum2 << "\n\n";
+
+    delete doubled;
+    delete gt3;
+}
+
+void test_MutableArraySequence() {
+    cout << "=== MUTABLEARRAYSEQUENCE FULL TEST ===\n\n";
+
+    int arr[] = {10, 20, 30, 40, 50};
+    MutableArraySequence<int> seq(arr, 5);
+
+    cout << "Original: ";
+    PrintSequence(&seq);
+
+    cout << "GetFirst(): " << seq.GetFirst() << "\n";
+    cout << "GetLast():  " << seq.GetLast()  << "\n\n";
+
+    int sum = seq.Reduce(0, Add);
+    cout << "Reduce(sum=0): " << sum << "\n\n";
+
+    Sequence<int>* mapped = seq.Map(Square);
+    cout << "Map(x*x): ";
+    PrintSequence(mapped);
+
+    Sequence<int>* filtered = seq.Where(IsEven);
+    cout << "Where(even): ";
+    PrintSequence(filtered);
+
+    Sequence<int>* chain = seq.Map(Square)->Where(IsEven);
+    cout << "Map(x*x)->Where(even): ";
+    PrintSequence(chain);
+
+    cout << "\n";
+
+    delete mapped;
+    delete filtered;
+    delete chain;
+
+    MutableArraySequence<int> emptySeq;
+    cout << "Length: " << emptySeq.GetLength() << "\n";
+    try {
+        emptySeq.GetFirst();
+    } catch (const out_of_range&) {
+        cout << "GetFirst() on empty → OK\n";
+    }
+    Sequence<int>* emptyMapped = emptySeq.Map(Square);
+    cout << "Map on empty → Length: " << emptyMapped->GetLength() << "\n";
+    Sequence<int>* emptyFiltered = emptySeq.Where(IsEven);
+    cout << "Where on empty → Length: " << emptyFiltered->GetLength() << "\n\n";
+
+    delete emptyMapped;
+    delete emptyFiltered;
+}
+
+void test_ListSequence() {
+    cout << "=== LISTSEQUENCE FULL TEST ===\n\n";
+
+    int arr1[] = {1, 3, 5, 7, 9};
+    ListSequence<int> listSeq1(arr1, 5);
+
+    cout << "Original: ";
+    PrintSequence(&listSeq1);
+
+    auto Twice = [](int x) { return x * 2; };
+    Sequence<int>* doubled = listSeq1.Map(Twice);
+    cout << "Map(x*2): ";
+    PrintSequence(doubled);
+
     auto IsBig = [](int x) { return x >= 5; };
-    Sequence<int>* big = listSeq.Where(IsBig);
-    cout << "Where(x >= 5):        ";
+    Sequence<int>* big = listSeq1.Where(IsBig);
+    cout << "Where(x>=5): ";
     PrintSequence(big);
 
-    // Reduce
-    int sum = listSeq.Reduce(0, Add);
-    cout << "Reduce(sum): " << sum << "\n";
+    int sum = listSeq1.Reduce(0, Add);
+    cout << "Reduce(sum=0): " << sum << "\n";
 
-    Sequence<int>* sub = listSeq.GetSubsequence(1, 3);
+    Sequence<int>* sub = listSeq1.GetSubsequence(1, 3);
     cout << "GetSubsequence(1..3): ";
     PrintSequence(sub);
+
+    cout << "\n";
 
     delete doubled;
     delete big;
     delete sub;
-}
 
-// ============================================================================
-// 4) Тесты для BitSequence (без Map!)
-// ============================================================================
-void PrintBitSeq(const BitSequence& bits) {
-    int n = bits.GetLength();
-    if (n == 0) {
-        cout << "[]\n";
-        return;
+    ListSequence<int> emptyList(arr1, 0);
+    cout << "Length: " << emptyList.GetLength() << "\n";
+    try {
+        emptyList.GetFirst();
+    } catch (const out_of_range&) {
+        cout << "GetFirst() on empty → OK\n";
     }
-    cout << "[";
-    for (int i = 0; i < n; ++i) {
-        cout << bits[i];
-        if (i < n - 1) cout << ", ";
-    }
-    cout << "]\n";
+    Sequence<int>* emptyMapped = emptyList.Map(Square);
+    cout << "Map on empty → Length: " << emptyMapped->GetLength() << "\n";
+    Sequence<int>* emptyFiltered = emptyList.Where(IsEven);
+    cout << "Where on empty → Length: " << emptyFiltered->GetLength() << "\n\n";
+
+    delete emptyMapped;
+    delete emptyFiltered;
+
+    int arr2[] = {100};
+    ListSequence<int> singleList(arr2, 1);
+    PrintSequence(&singleList);
+
+    Sequence<int>* singleMapped = singleList.Map(Square);
+    cout << "Map(x*x): ";
+    PrintSequence(singleMapped);
+
+    Sequence<int>* singleFiltered = singleList.Where(IsBig);
+    cout << "Where(x>=5): ";
+    PrintSequence(singleFiltered);
+
+    int singleSum = singleList.Reduce(0, Add);
+    cout << "Reduce(sum=0): " << singleSum << "\n";
+
+    cout << "\n";
+
+    delete singleMapped;
+    delete singleFiltered;
 }
-
-void test_BitSequence() {
-    cout << "\n=== BIT SEQUENCE===\n";
-
-    Bit bits[] = {Bit(true),  Bit(false), Bit(true),  Bit(true),
-                  Bit(false), Bit(true),  Bit(false), Bit(true)};
-    BitSequence bitSeq(bits, 8);
-
-    cout << "Original bitSeq:        ";
-    PrintBitSeq(bitSeq);
-
-    // Not
-    BitSequence not_res = ~bitSeq;
-    cout << "Not (bitSeq):           ";
-    PrintBitSeq(not_res);
-
-    // And
-    Bit ones[] = {Bit(true), Bit(true), Bit(true), Bit(true)};
-    BitSequence mask(ones, 4);
-    BitSequence and_res = bitSeq & mask;
-    cout << "And (bitSeq & mask):    ";
-    PrintBitSeq(and_res);
-
-    // Or
-    BitSequence or_res = bitSeq | mask;
-    cout << "Or  (bitSeq | mask):    ";
-    PrintBitSeq(or_res);
-
-    // Xor
-    BitSequence xor_res = bitSeq ^ mask;
-    cout << "Xor (bitSeq ^ mask):    ";
-    PrintBitSeq(xor_res);
-
-}
-
-// ============================================================================
-// main
-// ============================================================================
 
 int main() {
     try {
         test_ImmutableArraySequence();
-
         test_MutableArraySequence();
-
         test_ListSequence();
-
-        test_BitSequence();
     }
     catch (const exception& e) {
         cerr << "Exception: " << e.what() << endl;
