@@ -35,15 +35,32 @@ class BitSequence : public Sequence<bool>{
 
         virtual ~BitSequence(){};
 
-        virtual bool GetFirst() const override;
-        virtual bool GetLast() const override;
-        virtual bool Get(int index) const override; 
-        virtual BitSequence* GetSubsequence(int startIndex, int endIndex) const override;
-        virtual int GetLength() const override;
+        virtual bool GetFirst() const override{return 0;}
+        virtual bool GetLast() const override{return 0;}
+        virtual bool Get(int index) const override{
+            if (index < 0 || index >= length){
+                throw std::out_of_range("IndexOutOfRange");
+            }
+            return (blocks[GetBlock(index)] & (1<<GetBitBlock(index))) != 0;
+        } 
+        virtual BitSequence* GetSubsequence(int startIndex, int endIndex) const override{
+            return nullptr;
+        }
 
-        virtual BitSequence* Append(bool item) override;
-        virtual BitSequence* Prepend(bool item) override;
-        virtual BitSequence* InsertAt(bool item, int index) override;
+        virtual int GetLength() const override{
+            return length;
+        }
+
+        virtual BitSequence* Append(bool item) override{
+            if (!GetBitBlock(length+1)){
+                blocks.Resize(blocks.GetSize()+1);
+            }
+            blocks[GetBlock(length)] |= (item<<GetBitBlock(length));
+            length++; 
+        }
+        
+        virtual BitSequence* Prepend(bool item) override{return nullptr;}
+        virtual BitSequence* InsertAt(bool item, int index) override{return nullptr;}
 
         virtual BitSequence* NewEmpty() const override{
             return new BitSequence;

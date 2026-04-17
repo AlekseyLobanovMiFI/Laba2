@@ -1,3 +1,6 @@
+#ifndef DYNAMIC_ARRAY_H
+#define DYNAMIC_ARRAY_H
+
 #include <stdexcept>
 
 template <class T> class DynamicArray{
@@ -95,3 +98,5 @@ template <class T> class DynamicArray{
         }
 
 };
+
+#endif
