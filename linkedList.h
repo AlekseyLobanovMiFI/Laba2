@@ -1,3 +1,7 @@
+#ifndef LINKED_LIST_H
+#define LINKED_LIST_H
+
+
 #include <stdexcept>
 
 template <class T> class LinkedList{
@@ -41,12 +45,14 @@ template <class T> class LinkedList{
             }
             return head->value;
         }
+
         T GetLast() const{
             if (!head){
                 throw std::out_of_range("EmptyList");
             }
             return tail->value;
         }
+
         T Get(int index) const{
             if (!head){
                 throw std::out_of_range("EmptyList");
@@ -63,6 +69,7 @@ template <class T> class LinkedList{
             }
             return current->value;
         }
+
         LinkedList<T>* GetSubList(int startIndex, int endIndex) const{
             if (startIndex<0 || endIndex<0 || startIndex>=length || endIndex>=length || startIndex>endIndex){
                 throw std::out_of_range("IndexOutOfRange");
@@ -79,9 +86,11 @@ template <class T> class LinkedList{
             }
             return result;
         } 
+
         int GetLength() const{
             return length;
         }
+
         void Append(T item){
             Node* appended = new Node(item);
             if (!head){
@@ -93,6 +102,7 @@ template <class T> class LinkedList{
             tail = appended;
             length++;
         }
+
         void Prepend(T item){
             Node* prepended = new Node(item);
             if (!head){
@@ -102,6 +112,7 @@ template <class T> class LinkedList{
             head = prepended;
             length++;
         }
+
         void InsertAt(T item, int index){
             if (index<0 || index>length){
                 throw std::out_of_range("IndexOutOfRange");
@@ -126,3 +137,5 @@ template <class T> class LinkedList{
         }
 
 };
+
+#endif
