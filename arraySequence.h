@@ -15,21 +15,23 @@ template <class T> class ArraySequence : public Sequence<T>{
     public:
 
         virtual ArraySequence<T>* Instance() = 0;
+        
         virtual ArraySequence<T>* CreateNewArray(T*, int) const =0;
 
 
         T GetFirst() const override{
             return array.Get(0);
         }
+
         T GetLast() const override{
             return array.Get(array.GetSize() - 1);
         }
+
         T Get(int index) const override{
             return array.Get(index);
         }
-        const T& operator[](int index) const{return array[index];}
 
-        
+        const T& operator[](int index) const{return array[index];}
 
         ArraySequence<T>*GetSubsequence(int startIndex, int endIndex) const override{
             T* result = new T [endIndex-startIndex + 1];
@@ -40,6 +42,7 @@ template <class T> class ArraySequence : public Sequence<T>{
             delete [] result;
             return temp;
         }
+
         int GetLength() const override{
             return array.GetSize();
         }
@@ -50,6 +53,7 @@ template <class T> class ArraySequence : public Sequence<T>{
             result->array.Set(result->array.GetSize()-1, item);
             return result;
         }
+
         ArraySequence<T>* Prepend(T item) override{
             ArraySequence<T>* result = Instance();
             DynamicArray<T>& res_arr = result->array;
@@ -61,6 +65,7 @@ template <class T> class ArraySequence : public Sequence<T>{
             return result;
 
         }
+
         ArraySequence<T>* InsertAt(T item, int index) override{
             if (index < 0 || index > array.GetSize()){
                 throw std::out_of_range("IndexOutOfRange");
@@ -74,8 +79,6 @@ template <class T> class ArraySequence : public Sequence<T>{
             res_arr.Set(index, item);
             return result;
         } 
-
-        
 
         ArraySequence (T* items, int count) : array(items, count){};
         ArraySequence () : array(0){};

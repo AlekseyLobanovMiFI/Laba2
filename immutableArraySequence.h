@@ -1,3 +1,6 @@
+#ifndef IMMUTABLE_ARRAY_SEQUENCE_H
+#define IMMUTABLE_ARRAY_SEQUENCE_H
+
 #include "arraySequence.h"
 
 template<class T> class ImmutableArraySequence : public ArraySequence<T>{
@@ -22,3 +25,5 @@ template<class T> class ImmutableArraySequence : public ArraySequence<T>{
         ImmutableArraySequence (int cnt) : ArraySequence<T>(cnt){};
 
 };
+
+#endif
