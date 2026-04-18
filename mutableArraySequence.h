@@ -1,3 +1,6 @@
+#ifndef MUTABLE_ARRAY_SEQUENCE_H
+#define MUTABLE_ARRAY_SEQUENCE_H
+
 #include "arraySequence.h"
 
 template<class T> class MutableArraySequence : public ArraySequence<T>{
@@ -25,3 +28,5 @@ template<class T> class MutableArraySequence : public ArraySequence<T>{
         MutableArraySequence (int cnt) : ArraySequence<T>(cnt){};
 
 };
+
+#endif
