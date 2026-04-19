@@ -5,136 +5,136 @@
 #include <stdexcept>
 
 template <class T> class LinkedList{
-    private:
-        struct Node {
-            T value;
-            Node* next;
-            
-            Node(T val) : value(val), next(nullptr) {}
-        };
+private:
+    struct Node {
+        T value;
+        Node* next;
+        
+        Node(T val) : value(val), next(nullptr) {}
+    };
 
-        Node* head;
-        Node* tail;
-        int length;
+    Node* head;
+    Node* tail;
+    int length;
 
-    public:
-        LinkedList (const T* items, int count) : head(nullptr), tail(head), length(0){
-            for (int i=0; i<count; i++){
-                Append(items[i]);
-            }
-        } 
-        LinkedList() : head(nullptr), tail(head), length(0) {}
-        LinkedList (const LinkedList <T> & list) : head(nullptr), tail(head), length(0){
-            for (int i=0; i<list.GetLength(); i++){
-                Append(list.Get(i));
-            }
+public:
+    LinkedList (const T* items, int count) : head(nullptr), tail(head), length(0){
+        for (int i=0; i<count; i++){
+            Append(items[i]);
         }
-
-        ~LinkedList(){
-            Node* current = head;
-            while (current){
-                Node* del = current;
-                current = current->next;
-                delete del;
-            }
+    } 
+    LinkedList() : head(nullptr), tail(head), length(0) {}
+    LinkedList (const LinkedList <T> & list) : head(nullptr), tail(head), length(0){
+        for (int i=0; i<list.GetLength(); i++){
+            Append(list.Get(i));
         }
+    }
 
-        T GetFirst() const{
-            if (!head){
-                throw std::out_of_range("EmptyList");
-            }
-            return head->value;
+    ~LinkedList(){
+        Node* current = head;
+        while (current){
+            Node* del = current;
+            current = current->next;
+            delete del;
         }
+    }
 
-        T GetLast() const{
-            if (!head){
-                throw std::out_of_range("EmptyList");
-            }
+    T GetFirst() const{
+        if (!head){
+            throw std::out_of_range("EmptyList");
+        }
+        return head->value;
+    }
+
+    T GetLast() const{
+        if (!head){
+            throw std::out_of_range("EmptyList");
+        }
+        return tail->value;
+    }
+
+    T Get(int index) const{
+        if (!head){
+            throw std::out_of_range("EmptyList");
+        }
+        if (index<0 || index>=length){
+            throw std::out_of_range("IndexOutOfRange");
+        }
+        if(index==length-1){
             return tail->value;
         }
-
-        T Get(int index) const{
-            if (!head){
-                throw std::out_of_range("EmptyList");
-            }
-            if (index<0 || index>=length){
-                throw std::out_of_range("IndexOutOfRange");
-            }
-            if(index==length-1){
-                return tail->value;
-            }
-            Node* current = head;
-            for (int i=0; i<index; i++){
-                current = current->next;
-            }
-            return current->value;
+        Node* current = head;
+        for (int i=0; i<index; i++){
+            current = current->next;
         }
+        return current->value;
+    }
 
-        LinkedList<T>* GetSubList(int startIndex, int endIndex) const{
-            if (startIndex<0 || endIndex<0 || startIndex>=length || endIndex>=length || startIndex>endIndex){
-                throw std::out_of_range("IndexOutOfRange");
-            }
-            LinkedList<T>* result = new LinkedList<T>;
-            Node* current = head;
-            for (int i=0; i<startIndex;i++){
-                current = current->next;
-            }
-            
-            for (int i=startIndex; i<=endIndex;i++){
-                result->Append(current->value);
-                current = current->next;
-            }
-            return result;
-        } 
-
-        int GetLength() const{
-            return length;
+    LinkedList<T>* GetSubList(int startIndex, int endIndex) const{
+        if (startIndex<0 || endIndex<0 || startIndex>=length || endIndex>=length || startIndex>endIndex){
+            throw std::out_of_range("IndexOutOfRange");
         }
-
-        void Append(T item){
-            Node* appended = new Node(item);
-            if (!head){
-                head = appended;
-            }
-            else{
-                tail->next = appended;
-            }
-            tail = appended;
-            length++;
+        LinkedList<T>* result = new LinkedList<T>;
+        Node* current = head;
+        for (int i=0; i<startIndex;i++){
+            current = current->next;
         }
-
-        void Prepend(T item){
-            Node* prepended = new Node(item);
-            if (!head){
-                tail = prepended;
-            }
-            prepended->next = head;
-            head = prepended;
-            length++;
+        
+        for (int i=startIndex; i<=endIndex;i++){
+            result->Append(current->value);
+            current = current->next;
         }
+        return result;
+    } 
 
-        void InsertAt(T item, int index){
-            if (index<0 || index>length){
-                throw std::out_of_range("IndexOutOfRange");
-            }
-            if (index==0){
-                Prepend(item);
-                return;
-            }
-            if (index==length){
-                Append(item);
-                return;
-            }
-            Node* inserted = new Node(item);
-            Node* current = head;
-            for (int i=0; i<index-1;i++){
-                current=current->next;
-            }
-            inserted->next = current->next;
-            current->next = inserted;
-            length++;
-            
+    int GetLength() const{
+        return length;
+    }
+
+    void Append(T item){
+        Node* appended = new Node(item);
+        if (!head){
+            head = appended;
         }
+        else{
+            tail->next = appended;
+        }
+        tail = appended;
+        length++;
+    }
+
+    void Prepend(T item){
+        Node* prepended = new Node(item);
+        if (!head){
+            tail = prepended;
+        }
+        prepended->next = head;
+        head = prepended;
+        length++;
+    }
+
+    void InsertAt(T item, int index){
+        if (index<0 || index>length){
+            throw std::out_of_range("IndexOutOfRange");
+        }
+        if (index==0){
+            Prepend(item);
+            return;
+        }
+        if (index==length){
+            Append(item);
+            return;
+        }
+        Node* inserted = new Node(item);
+        Node* current = head;
+        for (int i=0; i<index-1;i++){
+            current=current->next;
+        }
+        inserted->next = current->next;
+        current->next = inserted;
+        length++;
+        
+    }
 
 };
 
