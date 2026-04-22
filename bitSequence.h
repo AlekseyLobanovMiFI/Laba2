@@ -25,7 +25,7 @@ public:
     bool operator[](int index) const{return Get(index);}
 
 
-    BitSequence (bool* items, int cnt) : blocks(GetBlock(cnt + (bit_per_block - 1))), length(cnt){
+    BitSequence (const bool* items, int cnt) : blocks(GetBlock(cnt + (bit_per_block - 1))), length(cnt){
         for (int i=0; i<cnt; i++){
             blocks[GetBlock(i)] |= items[i]<<GetBitBlock(i); //происходит побитовое сложение и все элементы кроме итого остаются
         }
@@ -51,7 +51,7 @@ public:
         return length;
     }
 
-    virtual BitSequence* Append(bool item) override{
+    virtual BitSequence* Append(const bool& item) override{
         if (!GetBitBlock(length+1)){
             blocks.Resize(blocks.GetSize()+1);
         }
@@ -59,8 +59,8 @@ public:
         length++; 
     }
     
-    virtual BitSequence* Prepend(bool item) override{return nullptr;}
-    virtual BitSequence* InsertAt(bool item, int index) override{return nullptr;}
+    virtual BitSequence* Prepend(const bool& item) override{return nullptr;}
+    virtual BitSequence* InsertAt(const bool& item, int index) override{return nullptr;}
 
     virtual BitSequence* NewEmpty() const override{
         return new BitSequence;

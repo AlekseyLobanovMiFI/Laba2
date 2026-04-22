@@ -69,7 +69,7 @@ public:
         return size;
     }
 
-    void Set(int index, T value){
+    void Set(int index, const T& value){
         if (index < 0 || index >= size){
             throw std::out_of_range("IndexOutOfRange");
         }

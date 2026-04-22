@@ -28,12 +28,12 @@ void PrintSequence(Sequence<int>* seq) {
     cout << "]\n";
 }
 
-int Square(int x) { return x * x; }
-bool IsEven(int x) { return x % 2 == 0; }
-bool IsOdd(int x)  { return x % 2 == 1; }
-bool IsBig(int x)   { return x >= 5; }
-int Add(int x, int y) { return x + y; }
-int Mult(int x, int y) { return x * y; }
+int Square(const int& x) { return x * x; }
+bool IsEven(const int& x) { return x % 2 == 0; }
+bool IsOdd(const int& x)  { return x % 2 == 1; }
+bool IsBig(const int& x)   { return x >= 5; }
+int Add(const int& x, const int& y) { return x + y; }
+int Mult(const int& x, const int& y) { return x * y; }
 
 void test_ImmutableArraySequence() {
     cout << "=== IMMUTABLE ARRAYSEQUENCE FULL TEST ===\n\n";
@@ -113,13 +113,13 @@ void test_ImmutableArraySequence() {
 
     int arr2[] = {2, 2, 4, 4, 6};
     ImmutableArraySequence<int> seq2(arr2, 5);
-    Sequence<int>* doubled = seq2.Map([](int x) { return x * 2; });
+    Sequence<int>* doubled = seq2.Map([](const int& x) { return x * 2; });
     cout << "Original: ";
     PrintSequence(&seq2);
     cout << "Map(x*2): ";
     PrintSequence(doubled);
 
-    Sequence<int>* gt3 = seq2.Where([](int x) { return x > 3; });
+    Sequence<int>* gt3 = seq2.Where([](const int& x) { return x > 3; });
     cout << "Where(x>3): ";
     PrintSequence(gt3);
 
@@ -188,12 +188,12 @@ void test_ListSequence() {
     cout << "Original: ";
     PrintSequence(&listSeq1);
 
-    auto Twice = [](int x) { return x * 2; };
+    auto Twice = [](const int& x) { return x * 2; };
     Sequence<int>* doubled = listSeq1.Map(Twice);
     cout << "Map(x*2): ";
     PrintSequence(doubled);
 
-    auto IsBig = [](int x) { return x >= 5; };
+    auto IsBig = [](const int& x) { return x >= 5; };
     Sequence<int>* big = listSeq1.Where(IsBig);
     cout << "Where(x>=5): ";
     PrintSequence(big);

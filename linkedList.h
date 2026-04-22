@@ -39,6 +39,8 @@ public:
         }
     }
 
+    typedef Node* ListPosition;
+
     T GetFirst() const{
         if (!head){
             throw std::out_of_range("EmptyList");
@@ -46,11 +48,30 @@ public:
         return head->value;
     }
 
+    ListPosition GetFirstPos(){
+        return head;
+    }
+
+    static ListPosition GetNextPos(ListPosition cur){
+        return cur->next;
+    }
+
+    static bool IsNotLastPos(ListPosition cur){
+        return cur->next;
+    }
+
     T GetLast() const{
         if (!head){
             throw std::out_of_range("EmptyList");
         }
         return tail->value;
+    }
+
+    static T Get(ListPosition pos){
+        if (!pos){
+            throw std::out_of_range("InvalidPosition");
+        }
+        return pos->value;
     }
 
     T Get(int index) const{
@@ -84,6 +105,7 @@ public:
             result->Append(current->value);
             current = current->next;
         }
+
         return result;
     } 
 
@@ -91,7 +113,7 @@ public:
         return length;
     }
 
-    void Append(T item){
+    void Append(const T& item){
         Node* appended = new Node(item);
         if (!head){
             head = appended;
@@ -103,7 +125,7 @@ public:
         length++;
     }
 
-    void Prepend(T item){
+    void Prepend(const T& item){
         Node* prepended = new Node(item);
         if (!head){
             tail = prepended;
@@ -113,7 +135,7 @@ public:
         length++;
     }
 
-    void InsertAt(T item, int index){
+    void InsertAt(const T& item, int index){
         if (index<0 || index>length){
             throw std::out_of_range("IndexOutOfRange");
         }

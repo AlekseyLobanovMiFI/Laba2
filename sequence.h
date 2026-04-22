@@ -2,6 +2,10 @@
 #define SEQUENCE_H
 
 template <class T> class Sequence{
+protected:
+    virtual void AppendImple(const T& item){
+        Append(item);
+    }
 public:
     virtual T GetFirst() const=0;//абстрактная функция
     virtual T GetLast() const=0;
@@ -9,13 +13,13 @@ public:
     virtual Sequence<T>*GetSubsequence(int startIndex, int endIndex) const=0;
     virtual int GetLength() const=0;
 
-    virtual Sequence<T>*Append(T item)=0;
-    virtual Sequence<T>*Prepend(T item)=0;
-    virtual Sequence<T>*InsertAt(T item, int index)=0; 
+    virtual Sequence<T>*Append(const T& item)=0;
+    virtual Sequence<T>*Prepend(const T& item)=0;
+    virtual Sequence<T>*InsertAt(const T& item, int index)=0; 
 
     virtual ~Sequence(){};
 
-    Sequence<T>* Concat(Sequence<T>* const seq) {
+    virtual Sequence<T>* Concat(Sequence<T>* const seq) {
 
         for (int i = 0; i < seq->GetLength(); i++) {
             Append(seq->Get(i));
@@ -26,35 +30,24 @@ public:
 
     virtual Sequence<T>* NewEmpty() const =0;
 
-    virtual Sequence <T>* Map(T (*func)(T)) const{
+    virtual Sequence <T>* Map(T (*func)(const T&)) const{
         Sequence <T>* result = NewEmpty();
-        Sequence <T>* temp = result;
 
         for (int i = 0; i < GetLength(); i++) {
-            temp = result->Append(func(Get(i)));
-            if (temp != result){ 
-                delete result;
-                result = temp;
-            }
-
+            result->AppendImple(func(Get(i)));
         }
 
         return result;
 
     }
 
-    virtual Sequence <T>* Where(bool (*func)(T)) const{
+    virtual Sequence <T>* Where(bool (*func)(const T&)) const{
         Sequence <T>* result = NewEmpty();
-        Sequence <T>* temp = result;
 
         for (int i = 0; i < GetLength(); i++) {
             T item = Get(i);
             if (func(item)){
-                temp = result->Append(item);
-                if (temp != result){ 
-                    delete result;
-                    result = temp;
-                }
+                result->AppendImple(item);
             }
         }
 
@@ -62,7 +55,7 @@ public:
 
     }
 
-    T Reduce(T init, T (*func)(T,T)) const{
+    T Reduce(T init, T (*func)(const T&,const T&)) const{
         T res = init;
 
         for (int i = 0; i < GetLength(); i++) {

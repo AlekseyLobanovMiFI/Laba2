@@ -11,7 +11,7 @@ public:
         return this; 
     }
 
-    virtual MutableArraySequence<T>* CreateNewArray(T* items, int cnt) const override{
+    virtual MutableArraySequence<T>* CreateNewArray(const T* items, int cnt) const override{
         return new MutableArraySequence<T>(items, cnt);
     }
 
@@ -19,7 +19,7 @@ public:
         return new MutableArraySequence<T>();
     }
 
-    MutableArraySequence (T* items, int count) : ArraySequence<T>(items, count){};
+    MutableArraySequence (const T* items, int count) : ArraySequence<T>(items, count){};
     MutableArraySequence () : ArraySequence<T>(){};
     MutableArraySequence (const MutableArraySequence & seq) : ArraySequence<T>(seq){};
     MutableArraySequence (int cnt) : ArraySequence<T>(cnt){};
