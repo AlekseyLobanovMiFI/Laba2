@@ -48,7 +48,7 @@ public:
         return head->value;
     }
 
-    ListPosition GetFirstPos(){
+    ListPosition GetFirstPos() const{
         return head;
     }
 
@@ -56,9 +56,10 @@ public:
         return cur->next;
     }
 
-    static bool IsNotLastPos(ListPosition cur){
-        return cur->next;
-    }
+    //static bool IsNotLastPos(ListPosition cur){
+        //return cur->next;
+        //return cur != nullptr && cur->next != nullptr;
+    //}
 
     T GetLast() const{
         if (!head){

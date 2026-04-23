@@ -55,7 +55,7 @@ public:
 
     }
 
-    T Reduce(T init, T (*func)(const T&,const T&)) const{
+    virtual T Reduce(T init, T (*func)(const T&,const T&)) const{
         T res = init;
 
         for (int i = 0; i < GetLength(); i++) {

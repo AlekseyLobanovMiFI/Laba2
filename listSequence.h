@@ -55,14 +55,55 @@ public:
     }
 
     using ListPosition = typename LinkedList<T>::ListPosition;
+
     virtual ListSequence<T>* Concat(ListSequence<T>* const lst) {
         ListPosition current = lst->list.GetFirstPos();
-        while(LinkedList<T>::IsNotLastPos(current)){
+        //while(LinkedList<T>::IsNotLastPos(current)){
+        while (current != nullptr){
             Append(LinkedList<T>::Get(current));
             current = LinkedList<T>::GetNextPos(current);
         }
 
         return this;
+    }
+
+    virtual ListSequence<T>* Map(T (*func)(const T&)) const{
+        ListSequence<T>* result = new ListSequence<T>();
+        ListPosition current = list.GetFirstPos();
+        //while(LinkedList<T>::IsNotLastPos(current)){
+        while (current != nullptr){
+            result->Append(func(LinkedList<T>::Get(current)));
+            current = LinkedList<T>::GetNextPos(current);
+        }
+
+        return result;
+    }
+
+    virtual ListSequence <T>* Where(bool (*func)(const T&)) const{
+        ListSequence <T>* result = new ListSequence<T>();
+        ListPosition current = list.GetFirstPos();
+        //while(LinkedList<T>::IsNotLastPos(current)){
+        while (current != nullptr){
+            if (func(LinkedList<T>::Get(current))){
+                result->Append(LinkedList<T>::Get(current));
+            }
+            current = LinkedList<T>::GetNextPos(current);
+        }
+
+        return result;
+    }
+
+    virtual T Reduce(T init, T (*func)(const T&,const T&)) const{
+        T res = init;
+        ListPosition current = list.GetFirstPos();
+
+        //while(LinkedList<T>::IsNotLastPos(current)){
+        while (current != nullptr){
+            res = func(res, LinkedList<T>::Get(current));
+            current = LinkedList<T>::GetNextPos(current);
+        }
+
+        return res;
     }
     
     ListSequence (const T* items, int count) : list(items, count){} 
