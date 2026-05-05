@@ -13,6 +13,7 @@ public:
     virtual Sequence<T>*GetSubsequence(int startIndex, int endIndex) const=0;
     virtual int GetLength() const=0;
 
+
     virtual Sequence<T>*Append(const T& item)=0;
     virtual Sequence<T>*Prepend(const T& item)=0;
     virtual Sequence<T>*InsertAt(const T& item, int index)=0; 
@@ -71,13 +72,5 @@ public:
     //Option<T> try GetFirst(bool (*func)(T) = 0);
     //Option<T> GetLast(bool (*func)(T)  = 0); 
 };
-
-template <class T>std::ostream& operator<<(std::ostream& os, const Sequence<T>& s){
-    for (int i = 0; i < s.GetLength(); ++i) {
-        os << s.Get(i) << " ";
-    }
-
-    return os;
-}
 
 #endif
