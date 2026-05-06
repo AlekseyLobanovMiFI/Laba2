@@ -29,7 +29,7 @@ public:
         LinkedList<T>* subList = list.GetSubList(startIndex, endIndex);
         ListSequence<T>* result = new ListSequence<T>(*subList);
         return result;
-}
+    }
 
     int GetLength()const override{
         return list.GetLength();
@@ -56,7 +56,7 @@ public:
 
     using ListPosition = typename LinkedList<T>::ListPosition;
 
-    virtual ListSequence<T>* Concat(ListSequence<T>* const lst) {
+    virtual ListSequence<T>* Concat(ListSequence<T>* const lst){
         ListPosition current = lst->list.GetFirstPos();
         //while(LinkedList<T>::IsNotLastPos(current)){
         while (current != nullptr){
@@ -67,7 +67,7 @@ public:
         return this;
     }
 
-    virtual ListSequence<T>* Map(T (*func)(const T&)) const{
+    virtual ListSequence<T>* Map(T (*func)(const T&)) const override{
         ListSequence<T>* result = new ListSequence<T>();
         ListPosition current = list.GetFirstPos();
         //while(LinkedList<T>::IsNotLastPos(current)){
@@ -79,7 +79,7 @@ public:
         return result;
     }
 
-    virtual ListSequence <T>* Where(bool (*func)(const T&)) const{
+    virtual ListSequence <T>* Where(bool (*func)(const T&)) const override{
         ListSequence <T>* result = new ListSequence<T>();
         ListPosition current = list.GetFirstPos();
         //while(LinkedList<T>::IsNotLastPos(current)){
@@ -93,7 +93,7 @@ public:
         return result;
     }
 
-    virtual T Reduce(T init, T (*func)(const T&,const T&)) const{
+    virtual T Reduce(T init, T (*func)(const T&,const T&)) const override{
         T res = init;
         ListPosition current = list.GetFirstPos();
 
